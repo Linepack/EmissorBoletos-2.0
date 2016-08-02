@@ -5,6 +5,7 @@
  */
 package org.linepack.model;
 
+import java.sql.Blob;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,26 +22,28 @@ import javax.persistence.TemporalType;
 @Table(name = "bol_titulo")
 public class Titulo extends BaseModel {
 
-    @Column
+    @Column(nullable = false)
     private Integer numero;
-    @Column
+    @Column(nullable = false)
     private Integer parcela;
-    @Column
+    @Column(name = "posto_agencia")
     private String postoAgencia;
-    @Column
+    @Column(name = "byte_cedente")
     private String byteCedente;
-    @Column
+    @Column(nullable = false)
     private Double valor;
-    @Column
+    @Column(columnDefinition = "date", name = "data_emissao", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dataEmissao;
-    @Column
+    @Column(columnDefinition = "date", name = "data_vencimento", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dataVencimento;
     @Column
     private String instrucoes;
-    @Column
+    @Column(name = "local_pagamento")
     private String localPagamento;
+    @Column(columnDefinition = "blob")
+    private Blob boleto;
     @OneToOne
     private Cedente cedente;
     @OneToOne
@@ -144,4 +147,11 @@ public class Titulo extends BaseModel {
         this.sacadorAvalista = sacadorAvalista;
     }
 
+    public Blob getBoleto() {
+        return boleto;
+    }
+
+    public void setBoleto(Blob boleto) {
+        this.boleto = boleto;
+    }
 }

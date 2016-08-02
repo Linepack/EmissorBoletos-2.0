@@ -30,12 +30,12 @@ public abstract class BaseModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "dt_usuinc")
+    @Column(columnDefinition = "date", name = "dt_usuinc", nullable = false)
     private Date dataInclusao;
-    @Column(name = "nm_usuinc")
+    @Column(name = "nm_usuinc", nullable = false)
     private String nomeInclusao;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "dt_usualt")
+    @Column(columnDefinition = "date", name = "dt_usualt")
     private Date dataAlteracao;
     @Column(name = "nm_usualt")
     private String nomeAlteracao;

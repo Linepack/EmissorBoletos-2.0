@@ -18,9 +18,9 @@ import javax.persistence.Table;
 @Table(name = "bol_cedente")
 public class Cedente extends BaseModel {
 
-    @Column
+    @Column(nullable = false)
     private String nome;
-    @Column
+    @Column(nullable = false)
     private String cnpj;
     @OneToOne
     private Conta conta;

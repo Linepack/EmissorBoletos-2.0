@@ -17,15 +17,15 @@ import javax.persistence.Table;
 @Table(name = "bol_conta")
 public class Conta extends BaseModel {
 
-    @Column
+    @Column(nullable = false)
     private Integer banco;
-    @Column
+    @Column(nullable = false)
     private String agencia;
-    @Column
+    @Column(name = "digito_agencia", nullable = false)
     private String digitoAgencia;
-    @Column
+    @Column(nullable = false)
     private String conta;
-    @Column
+    @Column(nullable = false)
     private String carteira;
 
     public Integer getBanco() {
