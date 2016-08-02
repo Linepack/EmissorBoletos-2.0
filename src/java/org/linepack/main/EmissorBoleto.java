@@ -4,11 +4,11 @@
  * and open the template in the editor.
  */
 package org.linepack.main;
+      
+import org.jrimum.domkee.financeiro.banco.febraban.Cedente;
+import org.linepack.dao.CedenteDAO;
+import org.linepack.dao.TituloDAO;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import org.linepack.model.Titulo;
 
 /**
  *
@@ -16,10 +16,25 @@ import org.linepack.model.Titulo;
  */
 public class EmissorBoleto {
 
-    public static void run() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("homologa");
-        EntityManager em = emf.createEntityManager();
-        Titulo tit = new Titulo();
-        tit = em.find(Titulo.class, 1);
+    public String getBoletoStream(Integer tituloId) {                
+        org.linepack.model.Titulo tituloModel = this.getTituloModelById(tituloId);                
+        Cedente cedenteBoleto = this.getCedenteBoletoByTituloModel(tituloModel);
+        
+        return cedenteBoleto.getNome();
+    }
+    
+    private Cedente getCedenteBoletoByTituloModel(org.linepack.model.Titulo titulo){
+        org.linepack.model.Cedente cedenteModel = new org.linepack.model.Cedente();
+        CedenteDAO cedenteDAO = new CedenteDAO();
+        cedenteModel = cedenteDAO.getByID(titulo.getCedente().getId());
+        Cedente cedenteBoleto = new Cedente(cedenteModel.getNome(), cedenteModel.getCnpj());
+        return cedenteBoleto;        
+    }
+    
+    private org.linepack.model.Titulo getTituloModelById(Integer id){
+        org.linepack.model.Titulo tituloModel = new org.linepack.model.Titulo();
+        TituloDAO tituloDAO = new TituloDAO();
+        tituloModel = tituloDAO.getByID(id);
+        return tituloModel;
     }
 }

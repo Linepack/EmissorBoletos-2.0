@@ -14,7 +14,7 @@ import org.linepack.model.Titulo;
 public class TituloDAO extends BaseDAO<Titulo> {
 
     public TituloDAO() {
-        super();
+        super(Titulo.class);
     }
 
 }

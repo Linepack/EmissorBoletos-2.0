@@ -38,9 +38,9 @@ public class Titulo extends BaseModel {
     @Column(columnDefinition = "date", name = "data_vencimento", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dataVencimento;
-    @Column
+    @Column(precision = 4000)
     private String instrucoes;
-    @Column(name = "local_pagamento")
+    @Column(name = "local_pagamento", precision = 4000)    
     private String localPagamento;
     @Column(columnDefinition = "blob")
     private Blob boleto;

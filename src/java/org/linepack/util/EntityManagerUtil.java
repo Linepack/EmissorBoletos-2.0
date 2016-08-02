@@ -16,7 +16,7 @@ import javax.persistence.Persistence;
 public class EntityManagerUtil {
 
     public EntityManager getEntityManager() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("oracle");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("homologa");
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
 

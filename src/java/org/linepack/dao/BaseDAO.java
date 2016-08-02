@@ -15,13 +15,16 @@ import org.linepack.util.EntityManagerUtil;
 /**
  *
  * @author Leandro
+ * @param <T>
  */
 public class BaseDAO<T> {
 
     protected EntityManager entityManager;
+    private final Class<T> type;
 
-    public BaseDAO() {
+    public BaseDAO(Class<T> type) {
         this.entityManager = new EntityManagerUtil().getEntityManager();
+        this.type = type;
     }
 
     public String insert(T object) throws IOException {
@@ -50,13 +53,15 @@ public class BaseDAO<T> {
         return "Erro ao atualizar, objeto Nulo.";
     }
 
-    public T getByID(String modelClassName, Integer id) {
-        Query query = this.entityManager.createQuery(""
+    public T getByID(Integer id) {
+        /*Query query = this.entityManager.createQuery(""
                 + "select a"
                 + "  from " + modelClassName + " a "
                 + " where a.id = " + id);
         Object object = new Object();
-        object = query.getSingleResult();
+        object = query.getSingleResult();*/
+        Object object = new Object();
+        object = this.entityManager.find(this.type, id);
         this.entityManager.close();
         return (T) object;
     }

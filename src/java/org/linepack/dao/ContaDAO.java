@@ -14,7 +14,7 @@ import org.linepack.model.Conta;
 public class ContaDAO extends BaseDAO<Conta> {
 
     public ContaDAO() {
-        super();
+        super(Conta.class);
     }
 
 }

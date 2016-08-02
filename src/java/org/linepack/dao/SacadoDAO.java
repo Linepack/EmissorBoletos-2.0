@@ -14,7 +14,7 @@ import org.linepack.model.Sacado;
 public class SacadoDAO extends BaseDAO<Sacado>{
 
     public SacadoDAO() {
-        super();
+        super(Sacado.class);
     }
     
 }

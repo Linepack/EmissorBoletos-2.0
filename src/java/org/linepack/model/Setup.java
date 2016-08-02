@@ -17,11 +17,11 @@ import javax.persistence.Table;
 @Table(name = "bol_config")
 public class Setup extends BaseModel {
 
-    @Column(name = "ds_ip_servico")
+    @Column(name = "ds_ip_servico", nullable = false)
     private String ip;
-    @Column(name = "ds_host_servico")
+    @Column(name = "ds_host_servico", nullable = false)
     private String host;
-    @Column(name = "ds_porta_servico")
+    @Column(name = "ds_porta_servico", nullable = false)
     private String port;
 
     public String getIp() {

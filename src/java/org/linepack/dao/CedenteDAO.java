@@ -14,7 +14,7 @@ import org.linepack.model.Cedente;
 public class CedenteDAO extends BaseDAO<Cedente> {
 
     public CedenteDAO() {
-        super();
+        super(Cedente.class);
     }
 
 }

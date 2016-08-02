@@ -7,12 +7,13 @@ package org.linepack.rest;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.linepack.main.EmissorBoleto;
 
 /**
@@ -20,8 +21,8 @@ import org.linepack.main.EmissorBoleto;
  *
  * @author Leandro
  */
-@Path("generic")
-public class GenericResource {
+@Path("boleto")
+public class BoletoResource {
 
     @Context
     private UriInfo context;
@@ -29,24 +30,26 @@ public class GenericResource {
     /**
      * Creates a new instance of GenericResource
      */
-    public GenericResource() {
+    public BoletoResource() {
     }
 
     /**
      * Retrieves representation of an instance of
-     * org.linepack.rest.GenericResource
+     * org.linepack.rest.BoletoResource
      *
+     * @param id
      * @return an instance of java.lang.String
      */
     @GET
-    @Produces(MediaType.TEXT_HTML)
-    public String getHtml() {
-        EmissorBoleto.run();
-        return "teste";
+    @Path("response/{tituloId}")
+    public Response getRespons(@PathParam("tituloId") Integer id) {
+        EmissorBoleto emissorBoleto = new EmissorBoleto();
+        String stream = emissorBoleto.getBoletoStream(id);
+        return Response.status(200).entity(stream).build();
     }
 
     /**
-     * PUT method for updating or creating an instance of GenericResource
+     * PUT method for updating or creating an instance of BoletoResource
      *
      * @param content representation for the resource
      */

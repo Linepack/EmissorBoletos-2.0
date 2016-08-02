@@ -14,7 +14,11 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.jrimum-bopepo-0.2.3-DEV-20150223.025027-58-dep-sources.jar}</file>
+                    <file>${file.reference.jrimum-bopepo-0.2.3-DEV-20150223.025027-58-dep.jar-1}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.apache-commons-lang.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>
@@ -26,5 +30,6 @@
                 <root id="test.src.dir"/>
             </test-roots>
         </data>
+        <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1"/>
     </configuration>
 </project>

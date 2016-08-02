@@ -5,14 +5,16 @@
  */
 package org.linepack.dao;
 
+import org.linepack.model.Setup;
+
 /**
  *
  * @author Leandro
  */
-public class SetupDAO extends BaseDAO<BaseDAO> {
+public class SetupDAO extends BaseDAO<Setup> {
 
     public SetupDAO() {
-        super();
+        super(Setup.class);
     }
 
 }
