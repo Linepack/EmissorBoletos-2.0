@@ -5,6 +5,7 @@
  */
 package org.linepack.rest;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -12,6 +13,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.linepack.main.EmissorBoleto;
@@ -42,10 +44,11 @@ public class BoletoResource {
      */
     @GET
     @Path("response/{tituloId}")
-    public Response getRespons(@PathParam("tituloId") Integer id) {
+    @Produces("application/pdf")
+    public Response getPDF(@PathParam("tituloId") Integer id) {
         EmissorBoleto emissorBoleto = new EmissorBoleto();
-        String stream = emissorBoleto.getBoletoStream(id);
-        return Response.status(200).entity(stream).build();
+        String stream = emissorBoleto.getBoletoStream(id);        
+        return Response.status(200).entity("teste").build();
     }
 
     /**
