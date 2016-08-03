@@ -5,7 +5,8 @@
  */
 package org.linepack.rest;
 
-import javax.servlet.http.HttpServletResponse;
+import com.sun.xml.internal.ws.util.ByteArrayBuffer;
+import java.io.OutputStream;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -16,6 +17,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.jrimum.bopepo.Boleto;
+import org.jrimum.bopepo.view.BoletoViewer;
 import org.linepack.main.EmissorBoleto;
 
 /**
@@ -47,8 +50,12 @@ public class BoletoResource {
     @Produces("application/pdf")
     public Response getPDF(@PathParam("tituloId") Integer id) {
         EmissorBoleto emissorBoleto = new EmissorBoleto();
-        String stream = emissorBoleto.getBoletoStream(id);        
-        return Response.status(200).entity("teste").build();
+        Boleto boleto = emissorBoleto.getBoletoStream(id);
+        BoletoViewer viewer = new BoletoViewer(boleto);
+        byte[] pdfAsBytes = viewer.getPdfAsByteArray();
+        return Response.ok(pdfAsBytes)
+                .header("Content-Disposition", "attachment; filename=boleto.pdf")
+                .build();        
     }
 
     /**

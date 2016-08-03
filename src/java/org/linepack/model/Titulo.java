@@ -25,11 +25,7 @@ public class Titulo extends BaseModel {
     @Column(nullable = false)
     private Integer numero;
     @Column(nullable = false)
-    private Integer parcela;
-    @Column(name = "posto_agencia")
-    private String postoAgencia;
-    @Column(name = "byte_cedente")
-    private String byteCedente;
+    private Integer parcela;    
     @Column(nullable = false)
     private Double valor;
     @Column(columnDefinition = "date", name = "data_emissao", nullable = false)
@@ -40,8 +36,10 @@ public class Titulo extends BaseModel {
     private Date dataVencimento;
     @Column(precision = 4000)
     private String instrucoes;
-    @Column(name = "local_pagamento", precision = 4000)    
+    @Column(name = "local_pagamento", precision = 4000)
     private String localPagamento;
+    @Column(name = "nr_ano_abreviado", precision = 2)
+    private String ano;
     @Column(columnDefinition = "blob")
     private Blob boleto;
     @OneToOne
@@ -66,23 +64,7 @@ public class Titulo extends BaseModel {
     public void setParcela(Integer parcela) {
         this.parcela = parcela;
     }
-
-    public String getPostoAgencia() {
-        return postoAgencia;
-    }
-
-    public void setPostoAgencia(String postoAgencia) {
-        this.postoAgencia = postoAgencia;
-    }
-
-    public String getByteCedente() {
-        return byteCedente;
-    }
-
-    public void setByteCedente(String byteCedente) {
-        this.byteCedente = byteCedente;
-    }
-
+    
     public Double getValor() {
         return valor;
     }
@@ -154,4 +136,13 @@ public class Titulo extends BaseModel {
     public void setBoleto(Blob boleto) {
         this.boleto = boleto;
     }
+
+    public String getAno() {
+        return ano;
+    }
+
+    public void setAno(String ano) {
+        this.ano = ano;
+    }
+
 }

@@ -25,8 +25,14 @@ public class Conta extends BaseModel {
     private String digitoAgencia;
     @Column(nullable = false)
     private String conta;
-    @Column(nullable = false)
+    @Column
     private String carteira;
+    @Column(name = "tamanho_nosso_numero")
+    private Integer tamanhoNossoNumero;
+    @Column(name = "posto_agencia")
+    private String postoAgencia;
+    @Column(name = "byte_cedente")
+    private String byteCedente;
 
     public Integer getBanco() {
         return banco;
@@ -68,4 +74,29 @@ public class Conta extends BaseModel {
         this.carteira = carteira;
     }
 
+    public Integer getTamanhoNossoNumero() {
+        return tamanhoNossoNumero;
+    }
+
+    public void setTamanhoNossoNumero(Integer tamanhoNossoNumero) {
+        this.tamanhoNossoNumero = tamanhoNossoNumero;
+    }
+
+    public String getPostoAgencia() {
+        return postoAgencia;
+    }
+
+    public void setPostoAgencia(String postoAgencia) {
+        this.postoAgencia = postoAgencia;
+    }
+
+    public String getByteCedente() {
+        return byteCedente;
+    }
+
+    public void setByteCedente(String byteCedente) {
+        this.byteCedente = byteCedente;
+    }
+    
+    
 }
