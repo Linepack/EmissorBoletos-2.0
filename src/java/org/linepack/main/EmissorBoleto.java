@@ -6,7 +6,8 @@
 package org.linepack.main;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.sql.SQLException;
+import java.util.Date;
 import org.jrimum.bopepo.BancosSuportados;
 import org.jrimum.bopepo.Boleto;
 import org.jrimum.bopepo.view.BoletoViewer;
@@ -38,16 +39,22 @@ import org.linepack.util.StringUtil;
 public class EmissorBoleto {
 
     public Boleto getBoletoStream(Integer tituloId) {
-        org.linepack.model.Titulo tituloModel = this.getTituloModelById(tituloId);
-        org.linepack.model.Cedente cedenteModel = this.getCedenteModelById(tituloModel.getCedente().getId());
-        org.linepack.model.Sacado sacadoModel = this.getSacadoModelById(tituloModel.getSacado().getId());
+        try {
+            org.linepack.model.Titulo tituloModel = this.getTituloModelById(tituloId);
+            org.linepack.model.Cedente cedenteModel = this.getCedenteModelById(tituloModel.getCedente().getId());
+            org.linepack.model.Sacado sacadoModel = this.getSacadoModelById(tituloModel.getSacado().getId());
 
-        if (tituloModel.getSacadorAvalista() != null) {
-            org.linepack.model.Sacado sacadorAvalista = this.getSacadoModelById(tituloModel.getSacadorAvalista().getId());
+            org.linepack.model.Sacado sacadorAvalista = null;
+            if (tituloModel.getSacadorAvalista() != null) {
+                sacadorAvalista = this.getSacadoModelById(tituloModel.getSacadorAvalista().getId());
+            }
+            
+            Boleto boleto = this.createBoleto(cedenteModel, sacadoModel, sacadorAvalista, tituloModel);
+            this.updateTituloModel(tituloModel, boleto);
+            return boleto;
+        } catch (Exception e) {
+            return new Boleto();
         }
-
-        Boleto boleto = this.createBoleto(cedenteModel, sacadoModel, sacadoModel, tituloModel);        
-        return boleto;
     }
 
     private org.linepack.model.Titulo getTituloModelById(Integer id) {
@@ -133,4 +140,13 @@ public class EmissorBoleto {
         return enderecoSacado;
     }
 
+    private void updateTituloModel(org.linepack.model.Titulo titulo, Boleto boleto) throws SQLException {
+        TituloDAO tituloDAO = new TituloDAO();
+        titulo.setDataAlteracao(new Date());
+        titulo.setNomeAlteracao("JAVA");
+        BoletoViewer viewer = new BoletoViewer(boleto);
+        byte[] pdfAsBytes = viewer.getPdfAsByteArray();
+        titulo.setBoleto(pdfAsBytes);
+        tituloDAO.update(titulo);
+    }
 }

@@ -5,10 +5,10 @@
  */
 package org.linepack.model;
 
-import java.sql.Blob;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,7 +25,7 @@ public class Titulo extends BaseModel {
     @Column(nullable = false)
     private Integer numero;
     @Column(nullable = false)
-    private Integer parcela;    
+    private Integer parcela;
     @Column(nullable = false)
     private Double valor;
     @Column(columnDefinition = "date", name = "data_emissao", nullable = false)
@@ -40,8 +40,9 @@ public class Titulo extends BaseModel {
     private String localPagamento;
     @Column(name = "nr_ano_abreviado", precision = 2)
     private String ano;
-    @Column(columnDefinition = "blob")
-    private Blob boleto;
+    @Lob
+    @Column
+    private byte[] boleto;
     @OneToOne
     private Cedente cedente;
     @OneToOne
@@ -64,7 +65,7 @@ public class Titulo extends BaseModel {
     public void setParcela(Integer parcela) {
         this.parcela = parcela;
     }
-    
+
     public Double getValor() {
         return valor;
     }
@@ -129,11 +130,11 @@ public class Titulo extends BaseModel {
         this.sacadorAvalista = sacadorAvalista;
     }
 
-    public Blob getBoleto() {
+    public byte[] getBoleto() {
         return boleto;
     }
 
-    public void setBoleto(Blob boleto) {
+    public void setBoleto(byte[] boleto) {
         this.boleto = boleto;
     }
 

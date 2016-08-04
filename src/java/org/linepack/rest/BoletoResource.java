@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jrimum.bopepo.Boleto;
 import org.jrimum.bopepo.view.BoletoViewer;
 import org.linepack.main.EmissorBoleto;
@@ -49,13 +50,20 @@ public class BoletoResource {
     @Path("response/{tituloId}")
     @Produces("application/pdf")
     public Response getPDF(@PathParam("tituloId") Integer id) {
-        EmissorBoleto emissorBoleto = new EmissorBoleto();
-        Boleto boleto = emissorBoleto.getBoletoStream(id);
-        BoletoViewer viewer = new BoletoViewer(boleto);
-        byte[] pdfAsBytes = viewer.getPdfAsByteArray();
-        return Response.ok(pdfAsBytes)
-                .header("Content-Disposition", "attachment; filename=boleto.pdf")
-                .build();        
+        try {
+            EmissorBoleto emissorBoleto = new EmissorBoleto();
+            Boleto boleto = emissorBoleto.getBoletoStream(id);
+            BoletoViewer viewer = new BoletoViewer(boleto);
+            byte[] pdfAsBytes = viewer.getPdfAsByteArray();
+            return Response.ok(pdfAsBytes)
+                    .header("Content-Disposition", "attachment; filename=boleto.pdf")
+                    .build();
+        } catch (Exception e) {
+            ResponseBuilder rBuild = Response.status(Response.Status.BAD_REQUEST);
+            return rBuild.type(MediaType.TEXT_PLAIN)
+                    .entity("Erro ao gerar Boleto: " + e.toString())
+                    .build();
+        }
     }
 
     /**
