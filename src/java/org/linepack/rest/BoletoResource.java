@@ -5,8 +5,6 @@
  */
 package org.linepack.rest;
 
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
-import java.io.OutputStream;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -20,7 +18,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jrimum.bopepo.Boleto;
 import org.jrimum.bopepo.view.BoletoViewer;
+import org.linepack.dao.TituloDAO;
 import org.linepack.main.EmissorBoleto;
+import org.linepack.model.Titulo;
 
 /**
  * REST Web Service
@@ -43,25 +43,59 @@ public class BoletoResource {
      * Retrieves representation of an instance of
      * org.linepack.rest.BoletoResource
      *
-     * @param id
+     * @param tituloId
      * @return an instance of java.lang.String
      */
     @GET
-    @Path("response/{tituloId}")
+    @Path("create/{tituloId}")
     @Produces("application/pdf")
-    public Response getPDF(@PathParam("tituloId") Integer id) {
+    public Response createBoletoPDF(@PathParam("tituloId") Integer tituloId) {
         try {
-            EmissorBoleto emissorBoleto = new EmissorBoleto();
-            Boleto boleto = emissorBoleto.getBoletoStream(id);
-            BoletoViewer viewer = new BoletoViewer(boleto);
-            byte[] pdfAsBytes = viewer.getPdfAsByteArray();
+            Titulo tituloModel = new Titulo();
+            TituloDAO tituloDAO = new TituloDAO();
+            tituloModel = tituloDAO.getByID(tituloId);
+
+            byte[] pdfAsBytes = null;
+            if (tituloModel != null) {
+                pdfAsBytes = tituloModel.getBoleto();
+            } else {
+                EmissorBoleto emissorBoleto = new EmissorBoleto();
+                Boleto boleto = emissorBoleto.getBoletoStream(tituloId);
+                BoletoViewer viewer = new BoletoViewer(boleto);
+                pdfAsBytes = viewer.getPdfAsByteArray();
+            }
+            
             return Response.ok(pdfAsBytes)
-                    .header("Content-Disposition", "attachment; filename=boleto.pdf")
+                    .header("Content-Disposition", "inline; filename=boleto.pdf")
                     .build();
         } catch (Exception e) {
             ResponseBuilder rBuild = Response.status(Response.Status.BAD_REQUEST);
             return rBuild.type(MediaType.TEXT_PLAIN)
-                    .entity("Erro ao gerar Boleto: " + e.toString())
+                    .entity("Erro ao criar Boleto: " + e.toString())
+                    .build();
+        }
+    }
+
+    /**
+     *
+     * @param tituloId
+     * @return
+     */
+    @GET
+    @Path("open/{tituloId}")
+    @Produces("application/pdf")
+    public Response openBoletoPDF(@PathParam("tituloId") Integer tituloId) {
+        try {
+            Titulo tituloModel = new Titulo();
+            TituloDAO tituloDAO = new TituloDAO();
+            tituloModel = tituloDAO.getByID(tituloId);
+            return Response.ok(tituloModel.getBoleto())
+                    .header("Content-Disposition", "inline; filename=boleto.pdf")
+                    .build();
+        } catch (Exception e) {
+            ResponseBuilder rBuild = Response.status(Response.Status.BAD_REQUEST);
+            return rBuild.type(MediaType.TEXT_PLAIN)
+                    .entity("Erro ao abrir Boleto: " + e.toString())
                     .build();
         }
     }
