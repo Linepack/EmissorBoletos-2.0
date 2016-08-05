@@ -53,13 +53,7 @@ public class BaseDAO<T> {
         return "Erro ao atualizar, objeto Nulo.";
     }
 
-    public T getByID(Integer id) {
-        /*Query query = this.entityManager.createQuery(""
-                + "select a"
-                + "  from " + modelClassName + " a "
-                + " where a.id = " + id);
-        Object object = new Object();
-        object = query.getSingleResult();*/
+    public T getByID(Integer id) {    
         Object object = new Object();
         object = this.entityManager.find(this.type, id);
         this.entityManager.close();
@@ -72,7 +66,6 @@ public class BaseDAO<T> {
         object = query.getSingleResult();
         this.entityManager.close();
         return (T) object;
-
     }
 
     public <T> List<T> getListByNamedQuery(String namedQueryName) throws IllegalAccessException {

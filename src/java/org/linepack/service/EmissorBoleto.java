@@ -3,10 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.linepack.main;
+package org.linepack.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.jrimum.bopepo.BancosSuportados;
 import org.jrimum.bopepo.Boleto;
@@ -27,7 +32,9 @@ import org.jrimum.domkee.financeiro.banco.febraban.TipoDeTitulo;
 import org.jrimum.domkee.financeiro.banco.febraban.Titulo;
 import org.linepack.dao.CedenteDAO;
 import org.linepack.dao.SacadoDAO;
+import org.linepack.dao.SetupDAO;
 import org.linepack.dao.TituloDAO;
+import org.linepack.model.Setup;
 import org.linepack.util.BancoBrasilUtil;
 import org.linepack.util.BancoSicrediUtil;
 import org.linepack.util.StringUtil;
@@ -38,9 +45,33 @@ import org.linepack.util.StringUtil;
  */
 public class EmissorBoleto {
 
-    public Boleto getBoletoStream(Integer tituloId) {
+    public byte[] getBoletoBytes(Integer tituloId) {
+        org.linepack.model.Titulo tituloModel = new org.linepack.model.Titulo();
+        tituloModel = this.getTituloModelById(tituloId);
+
+        byte[] pdfAsBytes = null;
+        if (tituloModel != null) {
+            pdfAsBytes = tituloModel.getBoleto();
+        } else {
+            Boleto boleto = this.getBoletoStream(tituloModel);
+            BoletoViewer viewer = new BoletoViewer(boleto);
+            pdfAsBytes = viewer.getPdfAsByteArray();
+        }
+        return pdfAsBytes;
+    }
+
+    public String getBoletoByPath(Integer tituloId) throws FileNotFoundException, IOException {
+        byte[] pdfAsBytes = this.getBoletoBytes(tituloId);
+        Setup setupModel = this.getSetupAtivo();
+        String nomeArquivo = setupModel.getPathToSaveFile() + this.getFileName();
+        try (FileOutputStream fos = new FileOutputStream(new File(nomeArquivo))) {
+            fos.write(pdfAsBytes);
+        }
+        return nomeArquivo;
+    }
+
+    private Boleto getBoletoStream(org.linepack.model.Titulo tituloModel) {
         try {
-            org.linepack.model.Titulo tituloModel = this.getTituloModelById(tituloId);
             org.linepack.model.Cedente cedenteModel = this.getCedenteModelById(tituloModel.getCedente().getId());
             org.linepack.model.Sacado sacadoModel = this.getSacadoModelById(tituloModel.getSacado().getId());
 
@@ -48,7 +79,7 @@ public class EmissorBoleto {
             if (tituloModel.getSacadorAvalista() != null) {
                 sacadorAvalista = this.getSacadoModelById(tituloModel.getSacadorAvalista().getId());
             }
-            
+
             Boleto boleto = this.createBoleto(cedenteModel, sacadoModel, sacadorAvalista, tituloModel);
             this.updateTituloModel(tituloModel, boleto);
             return boleto;
@@ -57,25 +88,24 @@ public class EmissorBoleto {
         }
     }
 
+    private org.linepack.model.Setup getSetupAtivo() {
+        SetupDAO setupDAO = new SetupDAO();
+        return setupDAO.getByNamedQuery("setupAtivo");
+    }
+
     private org.linepack.model.Titulo getTituloModelById(Integer id) {
-        org.linepack.model.Titulo tituloModel = new org.linepack.model.Titulo();
         TituloDAO tituloDAO = new TituloDAO();
-        tituloModel = tituloDAO.getByID(id);
-        return tituloModel;
+        return tituloDAO.getByID(id);
     }
 
     private org.linepack.model.Cedente getCedenteModelById(Integer id) {
-        org.linepack.model.Cedente cedenteModel = new org.linepack.model.Cedente();
         CedenteDAO cedenteDAO = new CedenteDAO();
-        cedenteModel = cedenteDAO.getByID(id);
-        return cedenteModel;
+        return cedenteDAO.getByID(id);
     }
 
     private org.linepack.model.Sacado getSacadoModelById(Integer id) {
-        org.linepack.model.Sacado sacadoModel = new org.linepack.model.Sacado();
         SacadoDAO sacadoDAO = new SacadoDAO();
-        sacadoModel = sacadoDAO.getByID(id);
-        return sacadoModel;
+        return sacadoDAO.getByID(id);
     }
 
     private Boleto createBoleto(
@@ -148,5 +178,12 @@ public class EmissorBoleto {
         byte[] pdfAsBytes = viewer.getPdfAsByteArray();
         titulo.setBoleto(pdfAsBytes);
         tituloDAO.update(titulo);
+    }
+
+    private String getFileName() {
+        Date data = new Date();
+        SimpleDateFormat dataFormatada = new SimpleDateFormat("yyyyMMddHHmmssSSSS");
+        String nomeArquivo = dataFormatada.format(data) + ".pdf";
+        return nomeArquivo;
     }
 }
