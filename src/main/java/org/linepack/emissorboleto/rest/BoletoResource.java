@@ -6,14 +6,17 @@
 package org.linepack.emissorboleto.rest;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -29,6 +32,7 @@ public class BoletoResource {
 
     @Context
     private UriInfo context;
+    private ExecutorService executorService = java.util.concurrent.Executors.newCachedThreadPool();
 
     /**
      * Creates a new instance of GenericResource
@@ -36,17 +40,21 @@ public class BoletoResource {
     public BoletoResource() {
     }
 
-    /**
-     * Retrieves representation of an instance of
-     * org.linepack.rest.BoletoResource
-     *
-     * @param tituloId
-     * @return an instance of java.lang.String
-     */
     @GET
-    @Path("create/{tituloId}")
-    @Produces("application/pdf")
-    public Response createBoletoPDF(@PathParam("tituloId") Integer tituloId) {
+    @Path(value = "create/{tituloId}")
+    @Produces(value = "application/pdf")
+    public void createBoletoPDF(
+            @Suspended final AsyncResponse asyncResponse, 
+            @PathParam(value = "tituloId") final Integer tituloId) {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                asyncResponse.resume(doCreateBoletoPDF(tituloId));
+            }
+        });
+    }
+
+    private Response doCreateBoletoPDF(@PathParam("tituloId") Integer tituloId) {
         try {
             EmissorBoleto emissorBoleto = new EmissorBoleto();
             byte[] pdf = emissorBoleto.getBoletoBytes(tituloId);
@@ -63,26 +71,50 @@ public class BoletoResource {
 
     /**
      *
+     * @param asyncResponse
      * @param tituloId
-     * @return
      */
     @GET
     @Path("open/{tituloId}")
     @Produces("application/pdf")
-    public Response openBoletoPDF(@PathParam("tituloId") Integer tituloId) {
-        return this.createBoletoPDF(tituloId);
+    public void openBoletoPDF(@Suspended final AsyncResponse asyncResponse,
+            @PathParam("tituloId") final Integer tituloId) {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                asyncResponse.resume(doOpenBoletoPDF(tituloId));
+            }
+        });
+    }
+
+    private Response doOpenBoletoPDF(@PathParam("tituloId") Integer tituloId) {
+        return this.doCreateBoletoPDF(tituloId);
     }
 
     /**
      *
+     * @param asyncResponse
      * @param tituloId
-     * @return
      */
     @GET
     @Path("getPath/{tituloId}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getPathBoleto(@PathParam("tituloId") Integer tituloId) throws IOException {
+    public void getPathBoleto(@Suspended final AsyncResponse asyncResponse,
+            @PathParam("tituloId") final Integer tituloId) {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    asyncResponse.resume(doGetPathBoleto(tituloId));
+                } catch (IOException ex) {
+                    Logger.getLogger(BoletoResource.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
+    private String doGetPathBoleto(@PathParam("tituloId") Integer tituloId) throws IOException {
         EmissorBoleto emissorBoleto = new EmissorBoleto();
         return emissorBoleto.getBoletoByPath(tituloId);
-    }    
+    }
 }

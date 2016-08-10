@@ -22,23 +22,23 @@ import javax.persistence.TemporalType;
 @Table(name = "bol_titulo")
 public class Titulo extends BaseModel {
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nr_titulo")
     private Integer numero;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nr_parcela")
     private Integer parcela;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "vl_valor")
     private Double valor;
-    @Column(columnDefinition = "date", name = "data_emissao", nullable = false)
+    @Column(columnDefinition = "date", name = "dt_emissao", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dataEmissao;
-    @Column(columnDefinition = "date", name = "data_vencimento", nullable = false)
+    @Column(columnDefinition = "date", name = "dt_vencimento", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dataVencimento;
-    @Column(precision = 4000)
+    @Column(precision = 4000, name = "ds_instrucoes")
     private String instrucoes;
-    @Column(name = "local_pagamento", precision = 4000)
+    @Column(name = "ds_local_pagamento", precision = 4000)
     private String localPagamento;
-    @Column(name = "nr_ano_abreviado", precision = 2)
+    @Column(name = "ds_ano_abreviado", precision = 2)
     private String ano;
     @Lob
     @Column

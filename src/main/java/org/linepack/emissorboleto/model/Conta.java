@@ -17,21 +17,21 @@ import javax.persistence.Table;
 @Table(name = "bol_conta")
 public class Conta extends BaseModel {
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "cd_bco")
     private Integer banco;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nr_agencia")
     private String agencia;
-    @Column(name = "digito_agencia", nullable = false)
+    @Column(name = "ds_dv_agencia", nullable = false)
     private String digitoAgencia;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nr_conta")
     private String conta;
-    @Column
+    @Column(name = "ds_carteira")
     private String carteira;
-    @Column(name = "tamanho_nosso_numero")
+    @Column(name = "nr_tamanho_nosso_numero")
     private Integer tamanhoNossoNumero;
-    @Column(name = "posto_agencia")
+    @Column(name = "ds_posto_agencia")
     private String postoAgencia;
-    @Column(name = "byte_cedente")
+    @Column(name = "ds_byte_cedente")
     private String byteCedente;
 
     public Integer getBanco() {

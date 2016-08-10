@@ -18,21 +18,21 @@ import javax.persistence.Table;
 @Table(name = "bol_sacado")
 public class Sacado extends BaseModel {
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nm_nome")
     private String nome;
-    @Column(name = "cpf_ou_cnpj", nullable = false)
+    @Column(name = "nr_cpf_cnpj", nullable = false)
     private String cpfOuCnpj;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "sg_uf")
     private String uf;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nm_cidade")
     private String cidade;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "ds_cep")
     private String cep;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "ds_bairro")
     private String bairro;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "ds_logradouro")
     private String logradouro;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "ds_numero_logradouro")
     private String numero;
     @OneToOne
     private Conta conta;
