@@ -63,11 +63,13 @@ public class EmissorBoleto {
     public String getBoletoByPath(Integer tituloId) throws FileNotFoundException, IOException {
         byte[] pdfAsBytes = this.getBoletoBytes(tituloId);
         Setup setupModel = this.getSetupAtivo();
-        String nomeArquivo = setupModel.getPathToSaveFile() + this.getFileName();
-        try (FileOutputStream fos = new FileOutputStream(new File(nomeArquivo))) {
+        String nomeArquivo = this.getFileName();
+        String nomeArquivoToSave = setupModel.getPathToSaveFile() + nomeArquivo;
+        String nomeArquivoToShow = setupModel.getPathToShow() + nomeArquivo;
+        try (FileOutputStream fos = new FileOutputStream(new File(nomeArquivoToSave))) {
             fos.write(pdfAsBytes);
         }
-        return nomeArquivo;
+        return nomeArquivoToShow;
     }
 
     private Boleto getBoletoStream(org.linepack.emissorboleto.model.Titulo tituloModel) {

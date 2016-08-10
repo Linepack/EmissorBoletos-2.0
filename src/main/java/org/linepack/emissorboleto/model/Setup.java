@@ -27,6 +27,8 @@ public class Setup extends BaseModel {
     private String port;
     @Column(name = "ds_path_to_save")
     private String pathToSaveFile;
+    @Column(name = "ds_path_to_show")
+    private String pathToShow;
     @Column(name = "st_ativo")
     private Integer isAtivo;
 
@@ -68,6 +70,14 @@ public class Setup extends BaseModel {
 
     public void setIsAtivo(Integer isAtivo) {
         this.isAtivo = isAtivo;
+    }
+
+    public String getPathToShow() {
+        return pathToShow;
+    }
+
+    public void setPathToShow(String pathToShow) {
+        this.pathToShow = pathToShow;
     }
 
 }
